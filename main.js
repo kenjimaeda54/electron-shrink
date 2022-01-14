@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow, Menu, globalShortcut } = require("electron");
 //nosso app foi construído para linux
 let window;
 
@@ -17,6 +17,7 @@ function createWindow() {
     height: 600,
     icon: `${__dirname}/assets/linux.png`,
     resizable: dev,
+    backgroundColor: "white",
   });
   window.loadFile("./src/app/index.html");
 }
@@ -28,6 +29,13 @@ app.on("ready", () => {
   Menu.setApplicationMenu(mainMenu);
   //garbage collection
   window.on("closed", () => (window = null));
+
+  globalShortcut.register("CommandOrControl+Shift+I", () => {
+    window.webContents.openDevTools();
+  });
+  globalShortcut.register("CommandOrControl+Shift+R", () => {
+    window.reload();
+  });
 });
 
 //estou criando meu próprio menu para app
@@ -41,6 +49,8 @@ const menu = [
     submenu: [
       {
         label: "Exit",
+        //accelerator é o atalho para a ação
+        accelerator: "CmdOrCtrl+W",
         click: () => app.quit(),
       },
     ],
