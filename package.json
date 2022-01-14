@@ -1,0 +1,19 @@
+{
+  "name": "shirink",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron main.js",
+    "dev": "nodemon --exec electron main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^16.0.7"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
