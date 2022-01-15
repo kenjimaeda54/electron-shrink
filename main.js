@@ -1,4 +1,15 @@
-const { app, BrowserWindow, Menu, globalShortcut } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  Menu,
+  globalShortcut,
+  ipcMain,
+} = require("electron");
+const path = require("path");
+const imagemin = require("imagemin");
+const imageminMozjpeg = require("imagemin-mozjpeg");
+const imageminPngquant = require("imagemin-pngquant");
+
 //nosso app foi construído para linux
 
 process.env.NODE_ENV = "development";
@@ -19,9 +30,23 @@ function createWindow() {
     icon: `${__dirname}/assets/linux.png`,
     resizable: isDev,
     backgroundColor: "white",
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
   });
   window.loadFile("./src/app/index.html");
+  if (isDev) {
+    window.webContents.openDevTools();
+  }
 }
+
+//isso vai mostrar no console do terminal
+//sempre da uma olhada la
+ipcMain.on("img:submit", (event, args) => {
+  console.log(event);
+  console.log(args);
+});
 
 let aboutWindow;
 
