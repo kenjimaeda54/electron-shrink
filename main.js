@@ -1,14 +1,15 @@
 const { app, BrowserWindow, Menu, globalShortcut } = require("electron");
 //nosso app foi construído para linux
-let window;
 
 process.env.NODE_ENV = "development";
 
-const dev = process.env.NODE_ENV === "development" ? true : false;
+const isDev = process.env.NODE_ENV === "development" ? true : false;
 
 const linux = process.platform === "linux" ? true : false;
 
 const isMac = process.platform === "darwin" ? true : false;
+
+let window;
 
 function createWindow() {
   window = new BrowserWindow({
@@ -16,10 +17,23 @@ function createWindow() {
     width: 800,
     height: 600,
     icon: `${__dirname}/assets/linux.png`,
-    resizable: dev,
+    resizable: isDev,
     backgroundColor: "white",
   });
   window.loadFile("./src/app/index.html");
+}
+
+let aboutWindow;
+
+function createAboutWindow() {
+  aboutWindow = new BrowserWindow({
+    width: 300,
+    height: 300,
+    title: "About",
+    resizable: false,
+  });
+
+  aboutWindow.loadFile("./src/app/about.html");
 }
 
 app.on("ready", () => {
@@ -30,12 +44,13 @@ app.on("ready", () => {
   //garbage collection
   window.on("closed", () => (window = null));
 
-  globalShortcut.register("CommandOrControl+Shift+I", () => {
-    window.webContents.openDevTools();
-  });
-  globalShortcut.register("CommandOrControl+Shift+R", () => {
-    window.reload();
-  });
+  //e possível criar um shortcut para aplicativo
+  // globalShortcut.register("CommandOrControl+Shift+I", () => {
+  //   window.webContents.openDevTools();
+  // });
+  // globalShortcut.register("CommandOrControl+Shift+R", () => {
+  //   window.reload();
+  // });
 });
 
 //estou criando meu próprio menu para app
@@ -43,7 +58,32 @@ const menu = [
   //roles permite os itens do menu terem comportamentos predefinidos
   //no mac o menu nao e visível e ao clicar no ícone da aplicação
   //pode ser feche o app, então aqui esta lindo com esse problema
-  ...(isMac ? [{ role: "appMenu" }] : []),
+  ...(isMac
+    ? [
+        { role: "appMenu" },
+        {
+          label: app.name,
+          submenu: [
+            {
+              role: "about",
+              click: createAboutWindow, // aqui nao usa uma funcao anonima ()=>
+            },
+          ],
+        },
+      ]
+    : [
+        {
+          label: "Help",
+          submenu: [
+            {
+              label: "about",
+              click: createAboutWindow, // aqui nao usa uma funcao anonima ()=>
+            },
+          ],
+        },
+      ]),
+
+  //se for linux  ou windows
   {
     label: "File",
     submenu: [
@@ -51,10 +91,22 @@ const menu = [
         label: "Exit",
         //accelerator é o atalho para a ação
         accelerator: "CmdOrCtrl+W",
-        click: () => app.quit(),
+        click: () => app.quit(), //aqui usa porque quit e uma funcao auto chamada
       },
     ],
   },
+  ...(isDev
+    ? [
+        {
+          label: "Developer",
+          submenu: [
+            { role: "reload" },
+            { role: "toggleDevTools" },
+            { role: "forceReload" },
+          ],
+        },
+      ]
+    : []),
 ];
 
 //para nao fechar diretamente a tela vai ficar em background
