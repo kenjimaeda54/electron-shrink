@@ -63,7 +63,9 @@ async function handleArgs({ dest, filePath, quality }) {
       ],
     });
     console.log(files);
+    //para abrir o diretorio
     shell.openPath(dest);
+    window.webContents.send("img:done");
   } catch (e) {
     console.log(e);
   }
