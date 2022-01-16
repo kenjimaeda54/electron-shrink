@@ -4,11 +4,14 @@ const {
   Menu,
   globalShortcut,
   ipcMain,
+  shell,
 } = require("electron");
 const path = require("path");
+const os = require("os");
 const imagemin = require("imagemin");
-const imageminMozjpeg = require("imagemin-mozjpeg");
 const imageminPngquant = require("imagemin-pngquant");
+const slash = require("slash");
+// const imageMozjpeg = require("imagemin-mozjpeg");
 
 //nosso app foi construído para linux
 
@@ -44,9 +47,27 @@ function createWindow() {
 //isso vai mostrar no console do terminal
 //sempre da uma olhada la
 ipcMain.on("img:submit", (event, args) => {
-  console.log(event);
-  console.log(args);
+  args.dest = path.join(os.homedir(), "/imgShrink1398");
+  handleArgs(args);
 });
+
+async function handleArgs({ dest, filePath, quality }) {
+  try {
+    const pngQuality = quality / 100;
+    const files = await imagemin([slash(filePath)], {
+      destination: dest,
+      plugins: [
+        imageminPngquant({
+          quality: [pngQuality, pngQuality],
+        }),
+      ],
+    });
+    console.log(files);
+    shell.openPath(dest);
+  } catch (e) {
+    console.log(e);
+  }
+}
 
 let aboutWindow;
 

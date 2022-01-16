@@ -15,10 +15,12 @@
   },
   "devDependencies": {
     "electron-rebuild": "^3.2.7",
-    "imagemin": "^8.0.1",
+    "imagemin": "7.0.1",
     "imagemin-mozjpeg": "^10.0.0",
     "imagemin-pngquant": "^9.0.2",
     "nodemon": "^2.0.15",
-    "npm-check": "^5.9.2"
+    "npm-check": "^5.9.2",
+    "slash": "3.0.0",
+    "sucrase": "^3.20.3"
   }
 }
