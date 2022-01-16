@@ -10,12 +10,14 @@ const path = require("path");
 const os = require("os");
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
+const imageminMozjpeg = require("imagemin-mozjpeg");
 const slash = require("slash");
+const log = require("electron-log");
 // const imageMozjpeg = require("imagemin-mozjpeg");
 
 //nosso app foi construído para linux
 
-process.env.NODE_ENV = "development";
+process.env.NODE_ENV = "production";
 
 const isDev = process.env.NODE_ENV === "development" ? true : false;
 
@@ -57,17 +59,21 @@ async function handleArgs({ dest, filePath, quality }) {
     const files = await imagemin([slash(filePath)], {
       destination: dest,
       plugins: [
+        imageminMozjpeg({ quality }),
         imageminPngquant({
           quality: [pngQuality, pngQuality],
         }),
       ],
     });
-    console.log(files);
+    //electron-log
+    log.info(files);
+
     //para abrir o diretorio
     shell.openPath(dest);
     window.webContents.send("img:done");
   } catch (e) {
-    console.log(e);
+    //lib de log
+    log.error(e);
   }
 }
 
