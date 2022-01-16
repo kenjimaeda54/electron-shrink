@@ -1,19 +1,40 @@
 {
   "name": "shirink",
   "version": "1.0.0",
+  "productName": "ImageShrink",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron main.js",
-    "dev": "nodemon --exec electron main.js"
+    "dev": "nodemon --exec electron main.js",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/mac/icon.icns --prune=true --out=release-builds",
+    "package-linux": "electron-packager . --overwrite --platform=linux --arch=x64 --icon=assets/png/1024x1024.png --prune=false --out=release-builds",
+    "build-installer": "electron-builder"
+  },
+  "build": {
+    "appId": "cool-app",
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "assets/win/icon.ico",
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "nsis": {
+      "installerIcon": "assets/win/icon.ico",
+      "uninstallerIcon": "assets/win/icon.ico",
+      "uninstallDisplayName": "ImageShrink",
+      "license": "license.txt",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "electron": "^16.0.7"
-  },
   "devDependencies": {
+    "electron": "^16.0.7",
+    "electron-builder": "^22.14.5",
     "electron-log": "^4.4.4",
     "electron-packager": "^15.4.0",
     "electron-rebuild": "^3.2.7",
